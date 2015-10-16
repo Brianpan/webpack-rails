@@ -10,4 +10,5 @@
 // Read Sprockets README (https://github.com/sstephenson/sprockets#sprockets-directives) for details
 // about supported directives.
 //
-//= require bundle
+//= require main_bundle
+//= require css_bundle
