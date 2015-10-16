@@ -2,6 +2,8 @@
 
 var path = require('path');
 var webpack = require('webpack');
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
+
 var config = module.exports = {
   // 'context' sets the directory where webpack looks for module files you list in
   // your 'require' statements
@@ -12,7 +14,9 @@ var config = module.exports = {
   // The entrypoint can be anywhere and named anything - here we are calling it
   // '_application' and storing it in the 'javascripts' directory to follow
   // Rails conventions.
-  entry: './app/frontend/javascripts/entry.js'
+
+  //要module化的js，裡面有不少dependency
+  entry: ['./app/frontend/javascripts/entry.js']
 }
 
 config.output = {
@@ -24,12 +28,28 @@ config.output = {
 
 ///後綴的省略，在require的時後
 config.resolve = {
-  extensions: ['', '.js']
+  extensions: ['', '.js', '.css', '.scss']
 }
 
 config.module = {
   loaders: [
-    { test: /\.jsx$/, loader: 'jsx-loader' }
+    {
+      test: /\.js$/,
+      loader: 'babel-loader',
+      exclude: path.resolve(__dirname, 'node_modules')
+    },
+
+    { test: /\.jsx$/, loader: 'jsx-loader' },
+    {
+      test: /\.css$/,
+      loaders: ['style', 'css']
+    }
   ]
 }
 
+//注入一些共通的library, value 是call 此library的方式
+config.plugins = [
+  new webpack.ProvidePlugin(
+    {$: "jquery"}
+  )
+];
